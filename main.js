@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Menu } = require("electron");
 
 // Set env
 process.env.NODE_ENV = 'development';
@@ -21,7 +21,26 @@ const createMainWindow = () => {
     mainWindow.loadFile('./app/index.html');
 };
 
-app.on("ready", createMainWindow);
+const menu = [
+    ...(isMac ? [{ role: 'appMenu' }] : []),
+    {
+        label: 'File',
+        submenu: [{
+            label: 'Quit',
+            click: () => app.quit()
+        }]
+    }
+];
+
+app.on("ready", () => {
+    createMainWindow();
+
+    // Setting up Menu
+    const mainMenu = Menu.buildFromTemplate(menu);
+    Menu.setApplicationMenu(mainMenu);
+
+    mainWindow.on('closed', () => mainWindow = null);
+});
 
 app.on("window-all-closed", () => {
     if (!isMac) {
