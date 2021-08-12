@@ -23,3 +23,10 @@ form.addEventListener('submit', e => {
     // Send the data
     ipcRenderer.send('image:minimize', { imgPath, quality });
 });
+
+// On done
+ipcRenderer.on('image:done', () => {
+    M.toast({
+        html: `Image resized to ${slider.value}% quality`
+    });
+});
